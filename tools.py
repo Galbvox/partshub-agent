@@ -6,8 +6,8 @@ LEAD_TIME = {
     "BRK-200": 3,
 }
 
-def get_stock(catalog_number) -> int:
-    return STOCK.get(catalog_number, 0)
+def get_stock(catalog_number) -> int | str:
+    return STOCK.get(catalog_number, "catalog number not found in stock records")
 
 
 def get_lead_time(catalog_number) -> int | str:
