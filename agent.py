@@ -1,5 +1,15 @@
 import logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
+# logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(message)s",
+    handlers=[
+        logging.FileHandler("agent.log", encoding="utf-8"),
+        logging.StreamHandler(),
+    ],
+)
+
 logging.getLogger("httpx").setLevel(logging.WARNING)
 log = logging.getLogger("agent")
 import os
