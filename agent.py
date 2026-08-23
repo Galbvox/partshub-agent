@@ -1,9 +1,10 @@
 import logging
 # logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
-
+import uuid
+run_id = uuid.uuid4().hex[:8]
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s %(message)s",
+    format="%(asctime)s [%(run_id)s] %(message)s",
     handlers=[
         logging.FileHandler("agent.log", encoding="utf-8"),
         logging.StreamHandler(),
@@ -11,7 +12,11 @@ logging.basicConfig(
 )
 
 logging.getLogger("httpx").setLevel(logging.WARNING)
-log = logging.getLogger("agent")
+# log = logging.getLogger("agent")
+log = logging.LoggerAdapter(logging.getLogger("agent"), {"run_id": run_id})
+
+
+
 import os
 from dotenv import load_dotenv
 from tools import get_stock, get_lead_time, TOOLS
