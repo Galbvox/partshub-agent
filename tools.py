@@ -1,5 +1,5 @@
 STOCK = {
-    "BRK-200": 4,
+ "BRK-200": 4,
 }
 
 LEAD_TIME = {
@@ -8,6 +8,14 @@ LEAD_TIME = {
 
 def get_stock(catalog_number) -> int | str:
     return STOCK.get(catalog_number, "catalog number not found in stock records")
+    # return {
+    #     "units": 4,
+    #     "warehouse": "North",
+    #     "shelf": "A-14",
+    #     "last_updated": "2026-08-23",
+    #     "supplier": "Acme Parts Ltd",
+    #     "reorder_point": 10,
+    # }
 
 
 def get_lead_time(catalog_number) -> int | str:
