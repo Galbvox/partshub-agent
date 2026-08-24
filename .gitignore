@@ -3,6 +3,7 @@
 __pycache__/
 
 Example.exe
+agent_parrallel_v1.txt
 env_test.py
 
 *.log
