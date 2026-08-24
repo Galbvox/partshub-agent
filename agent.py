@@ -16,7 +16,6 @@ tracer = trace.get_tracer("agent")
 
 
 import logging
-# logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
 import uuid
 run_id = uuid.uuid4().hex[:8]
 logging.basicConfig(
@@ -29,12 +28,8 @@ logging.basicConfig(
 )
 
 logging.getLogger("httpx").setLevel(logging.WARNING)
-# log = logging.getLogger("agent")
 log = logging.LoggerAdapter(logging.getLogger("agent"), {"run_id": run_id})
 
-
-
-import os
 from dotenv import load_dotenv
 from tools import get_stock, get_lead_time, TOOLS
 import time
@@ -68,7 +63,6 @@ if __name__ == "__main__":
                 break        
             turns += 1
             
-            t_api = time.time()
             with tracer.start_as_current_span("api") as span:
                 response = client.messages.create (
                     model="claude-sonnet-4-6",
@@ -79,13 +73,8 @@ if __name__ == "__main__":
                 )
                 span.set_attribute("tokens.in", response.usage.input_tokens)
                 span.set_attribute("tokens.out", response.usage.output_tokens)
-                span.set_attribute("stop_reason", response.stop_reason)
-                
-            log.info("api %.2fs | tokens in=%s out=%s",
-            time.time() - t_api,
-            response.usage.input_tokens,
-            response.usage.output_tokens)
-            # log.info("tokens in=%s out=%s", response.usage.input_tokens, response.usage.output_tokens)
+                span.set_attribute("stop_reason", response.stop_reason)               
+          
             
             messages.append(
                 {"role": "assistant",
@@ -98,23 +87,15 @@ if __name__ == "__main__":
             results = []
             for block in response.content:
                 if block.type == "tool_use":
-                    t0 = time.time()
                     with tracer.start_as_current_span("tool") as span:
                         span.set_attribute("tool.name", block.name)
                         try:
                             output = run_tool(block.name, block.input)
                         except Exception as e:
-                            # print("Error: ", e)
                             output = f"Tool error: {e}"
                        
-                        span.set_attribute("tool.output", str(output)) 
-                    log.info("tool name: %s | input: %s | output: %s | %.3fs", block.name, block.input, output, time.time() - t0)
-
-                    # print("🔧", block.name, block.input, str(output))
-                    # logging.info("tool %s %s -> %s", block.name, block.input, output)
-                    # log.info("tool %s %s -> %s", block.name, block.input, output)
-                    # log.info("tool name: %s | input: %s | output: %s", block.name, block.input, output)
-                    print("----------------------------------------------------------")
+                        span.set_attribute("tool.output", str(output))
+            
                     results.append({
                         "type": "tool_result",
                         "tool_use_id": block.id,
@@ -125,10 +106,5 @@ if __name__ == "__main__":
 
         for block in response.content:
             if block.type == "text":
-                # print(block.text)
                 log.info("answer: %s", block.text)
         log.info("done in %.1fs, turns=%s", time.time() - start, turns)
-
-                
-        # print("turns: ", turns)
-    
