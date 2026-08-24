@@ -39,6 +39,15 @@ import anthropic
 load_dotenv(override=True)
 client = anthropic.Anthropic()
 
+system_prompt = (
+    "You are a parts inventory assistant. "
+    "You can only check stock and lead time. "
+    "You cannot place orders or reserve items. "
+    "Always check both stock and lead time before answering. "
+    "Answer in two or three sentences with the numbers. "
+    "Do not offer to take further action."
+)
+
 question = "Can I get 5 units of BRK-200 within a week?"
 messages = [
     {
@@ -65,6 +74,7 @@ if __name__ == "__main__":
             
             with tracer.start_as_current_span("api") as span:
                 response = client.messages.create (
+                    system=system_prompt,
                     model="claude-sonnet-4-6",
                     max_tokens=2048,
                     messages= messages,
