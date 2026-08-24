@@ -50,7 +50,7 @@ if __name__ == "__main__":
             break        
         turns += 1
         
-        
+        t_api = time.time()
         response = client.messages.create (
             model="claude-sonnet-4-6",
             max_tokens=2048,
@@ -58,7 +58,11 @@ if __name__ == "__main__":
             tool_choice={"type": "auto", "disable_parallel_tool_use": True},
             tools=TOOLS
         )
-        log.info("tokens in=%s out=%s", response.usage.input_tokens, response.usage.output_tokens)
+        log.info("api %.2fs | tokens in=%s out=%s",
+         time.time() - t_api,
+         response.usage.input_tokens,
+         response.usage.output_tokens)
+        # log.info("tokens in=%s out=%s", response.usage.input_tokens, response.usage.output_tokens)
         
         messages.append(
             {"role": "assistant",
@@ -71,16 +75,19 @@ if __name__ == "__main__":
         results = []
         for block in response.content:
             if block.type == "tool_use":
+                t0 = time.time()
                 try:
                     output = run_tool(block.name, block.input)
                 except Exception as e:
                     # print("Error: ", e)
                     output = f"Tool error: {e}"
                     
+                log.info("tool name: %s | input: %s | output: %s | %.3fs", block.name, block.input, output, time.time() - t0)
+
                 # print("🔧", block.name, block.input, str(output))
                 # logging.info("tool %s %s -> %s", block.name, block.input, output)
                 # log.info("tool %s %s -> %s", block.name, block.input, output)
-                log.info("tool name: %s | input: %s | output: %s", block.name, block.input, output)
+                # log.info("tool name: %s | input: %s | output: %s", block.name, block.input, output)
                 print("----------------------------------------------------------")
                 results.append({
                     "type": "tool_result",
