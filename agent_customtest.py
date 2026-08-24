@@ -39,7 +39,8 @@ import anthropic
 load_dotenv(override=True)
 client = anthropic.Anthropic()
 
-question = "Can I get 5 units of BRK-200 within a week?"
+question = "Can I get 5 units of BRK-200 within a week?" #correct
+# question = "Can I get 5 units of GSK-999 within a week?"
 messages = [
     {
         "role": "user",
@@ -48,7 +49,8 @@ messages = [
 
 def run_tool(name, tool_input) -> int | str:
     if name == "get_stock":
-        return get_stock(**tool_input)
+        raise ValueError("database unreachable")
+        # return get_stock(**tool_input)
     elif name == "get_lead_time":
         return get_lead_time(**tool_input)
     return f"Unknown tool: {name}"
