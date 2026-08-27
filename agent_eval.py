@@ -38,27 +38,31 @@ agent = create_agent(
     middleware=[no_parallel]
 )
 
-
+RUNS = 5
 for case in GOLDEN:
-    result = agent.invoke(
+    results = []
+    for i in range(RUNS):
+      result = agent.invoke(
         {"messages": [{"role": "user", "content": case["q"]}]},
-        {"recursion_limit": 6} 
-    )
-    print("case[id]: " + case["id"])
-    print("len(result[messages]): " + str(len(result["messages"])))
-    print("question from current case: " + case["q"])
-    #print("question from current result: " + str(result["messages"][0].content))
-    print("expect:", case["expect"])
-    print("actual llm response: ", result["messages"][-1].content)
-    text = result["messages"][-1].content
-    expect = case["expect"]
-    verdict = text.split("VERDICT:")[-1].strip()
-    used_tools = len(result["messages"][1].tool_calls) > 0
-    print("verdict_ok:", verdict == expect)
-    print("used_tools:", used_tools)
-    passed = (verdict == expect) and used_tools
-    print("verdict:", repr(verdict))
-    print("passed:", passed)
+        {"recursion_limit": 6})
+        
+      #print("case[id]: " + case["id"])
+      #print("len(result[messages]): " + str(len(result["messages"])))
+      #print("question from current case: " + case["q"])
+      #print("question from current result: " + str(result["messages"][0].content))
+      #print("expect:", case["expect"])
+      #print("actual llm response: ", result["messages"][-1].content)
+      text = result["messages"][-1].content
+      expect = case["expect"]
+      verdict = text.split("VERDICT:")[-1].strip()
+      used_tools = len(result["messages"][1].tool_calls) > 0
+      #print("verdict_ok:", verdict == expect)
+      #print("used_tools:", used_tools)
+      passed = (verdict == expect) and used_tools
+      #print("verdict:", repr(verdict))
+      #print("passed:", passed)
+      results.append(passed)
+    print(case["id"], sum(results), "/", RUNS)
     print("========================================")
     
         
