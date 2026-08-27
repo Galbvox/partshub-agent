@@ -1,0 +1,4 @@
+disable_parallel_tool_use -> middleware
+try/except -> crash, default is raise
+MAX_TURNS -> recursion_limit in config, default 25
+spans -> no tracing. usage_metadata per message only. no timing.

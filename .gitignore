@@ -6,4 +6,9 @@ Example.exe
 agent_parrallel_v1.txt
 env_test.py
 
+tools_fake.py
+agent_test_error.py
+
 *.log
+
+agent_ex
