@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 load_dotenv()
 
+import sys
 from langchain.agents import create_agent
 from langchain_anthropic import ChatAnthropic
 from tools import get_stock, get_lead_time, get_price
@@ -39,6 +40,7 @@ agent = create_agent(
 )
 
 RUNS = 5
+all_ok = True
 for case in GOLDEN:
     results = []
     for i in range(RUNS):
@@ -60,10 +62,15 @@ for case in GOLDEN:
       #print("used_tools:", used_tools)
       passed = (verdict == expect) and used_tools
       #print("verdict:", repr(verdict))
-      #print("passed:", passed)
+      print("passed:", passed)
       results.append(passed)
+        
     print(case["id"], sum(results), "/", RUNS)
+    if sum(results) < RUNS:
+        all_ok = False
     print("========================================")
+if not all_ok:
+    sys.exit(1)
     
         
     
