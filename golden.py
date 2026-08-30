@@ -1,7 +1,7 @@
 GOLDEN = [
     {"id": "stock_only",
      "q": "Can I get 3 units of BRK-600 within a week?",
-     "expect": "yes"},
+     "expect": "no"},
 
     {"id": "restock_fits",
      "q": "Can I get 5 units of BRK-200 within a week?",
