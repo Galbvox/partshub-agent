@@ -3,6 +3,8 @@ STOCK = {
  "BRK-200": 4,
  "BRK-300": 2,
  "BRK-600": 5,
+ "BRK-700": 6,
+ "BRK-800": 7,
 }
 
 # number of days needed to order more units
@@ -10,6 +12,8 @@ LEAD_TIME = {
     "BRK-200": 3,
     "BRK-300": 9,
     "BRK-600": 1,
+    "BRK-700": 2,
+    "BRK-800": 7,
 }
 
 def get_stock(catalog_number: str) -> int | str:
